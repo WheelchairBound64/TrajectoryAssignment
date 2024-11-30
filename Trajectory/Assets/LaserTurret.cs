@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 
 public class LaserTurret : MonoBehaviour
 {
@@ -32,8 +34,9 @@ public class LaserTurret : MonoBehaviour
         if(Physics.Raycast(barrelEnd.position, barrelEnd.forward, out RaycastHit hit, 1000.0f, targetLayer))
         {
             laserPoints.Add(hit.point);
-            Vector3 secondLaser = hit.point * -1;
-            if(Physics.Raycast(hit.point, secondLaser, out RaycastHit hit2, 1000.0f, targetLayer))
+            Vector3 inNormal = hit.normal; //takes the normal from the hit to reflect the laser on
+            Vector3 reflect = (-2f * Vector3.Dot(inNormal, barrelEnd.forward) * inNormal + barrelEnd.forward); // calculation for the reflect (it's a direct copy of how the vector3.reflect function works)
+            if(Physics.Raycast(hit.point, reflect, out RaycastHit hit2, 1000.0f, targetLayer)) // if the reflected laser would hit a wall, it creates a new laser and sends it. Only does one extra laser. so a single bounce
             {
                 laserPoints.Add(hit2.point);
             }
