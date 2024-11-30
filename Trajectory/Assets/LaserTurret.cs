@@ -32,6 +32,11 @@ public class LaserTurret : MonoBehaviour
         if(Physics.Raycast(barrelEnd.position, barrelEnd.forward, out RaycastHit hit, 1000.0f, targetLayer))
         {
             laserPoints.Add(hit.point);
+            Vector3 secondLaser = hit.point * -1;
+            if(Physics.Raycast(hit.point, secondLaser, out RaycastHit hit2, 1000.0f, targetLayer))
+            {
+                laserPoints.Add(hit2.point);
+            }
         }
 
         line.positionCount = laserPoints.Count;
